@@ -12,7 +12,7 @@ Uses GNU awk to automatically detect which characters are Unicode text, and whic
                     foulnames *.mp3 from fixing 900 files by accident.
         -i      pipe mode to stdout.  should remove all newlines
                 naturally the input only comes from a single filename which is piped in.  
-	        Yes, filenames can have newlines, and this is the solution.
+                Yes, filenames can have newlines, and this is the solution.
         -t      preview the new filenames, but don't fix filenames
 
 
