@@ -1,6 +1,7 @@
 	use: foulnames [OPTIONS] filename [more filenames...]
 
-      foulnames is a little bash script to remove non-printable characters and control characters from filenames
+      foulnames is a little bash script to remove non-printable characters and control
+      characters from filenames
       should run fine on any unix with GNU bash and stuff. 
       options: 
       	-m NUM      allow foulnames to fix more than 4 files at a time. This was to prevent 
@@ -13,12 +14,12 @@
 
 ### Usage 
 
-First run a trial run 
-    foulnames -t *
+First run a trial run    
+    `foulnames -t *`
 
-Then rename every file
-    foulnames * 
+Then rename every file    
+    `foulnames * `
 
 You may find that foulnames prevents you from rename hundreds of files at once.    
-set the limit higher with this option:  -m 9000 
+set the limit higher with this option: ` -m 9000 `
 
