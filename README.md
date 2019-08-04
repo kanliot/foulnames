@@ -24,6 +24,6 @@ First run a trial run
 Then rename every file    
     `foulnames * `
 
-You may find that foulnames prevents you from rename hundreds of files at once.    
+You may find that foulnames prevents you from renaming hundreds of files at once.    
 set the limit higher with this option: ` -m 9000 `
 
