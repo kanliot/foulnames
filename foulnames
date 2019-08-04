@@ -1,0 +1,119 @@
+#!/bin/bash
+
+#i just want to remove weird nonpritable and maybe even backslashes from filenames
+
+# copyright https://github.com/kanliot/bash-scripts  2019
+# software license is GPL 2.0
+
+helptext () {
+	echo "	use: foulnames [OPTIONS] filename [more filenames...]" ;echo 
+      cat <<the
+      foulnames is a little bash script to remove non-printable characters and control characters from filenames
+      it relies on gnu awk and sed
+      options: 
+      	-m allow foulnames to fix more than 4 files at a time. This was to prevent 
+		foulnames *.mp3 from fixing 900 files by accident.
+	-i pipe mode to stdout.  should remove all newlines
+		naturally the input only comes from a single filename which is piped in.  
+		Yes, filenames can have newlines, and this is the solution.
+	-t preview the new filenames, but don't fix filenames
+the
+	 }
+
+tr_file () {
+	# file has already been checked to exist
+	filename="$1"
+      stripped="$(printf "%s" "$1" | tr_file_stdin)"
+        test "$1" = "$stripped" && { echo "no rename intended for $filename"; return;}
+	
+	# no clobber on the mv command isn't heuristic.   so we test for dest file existance, and then error out.
+	test -e "$stripped" && { printf "fatal error. %q already exists.  Cannot overwrite.\n" "$stripped" ;exit 1;}
+	mv -v "$1" "$stripped"  || exit 
+	}
+tr_file_stdin () {
+	#whole stream is one filename.	
+	# you might expect another "." if the last character in the steam isn't matched, but no, it's not printed.  
+	#so it only prints . for unmatched if it surrounded by matching characters.
+
+	 #kill smart quotes by replacing then with regular quotes
+	 #the regex can be changed to allow more punctuation in filenames:
+	 #more punctuation can be added to the regex between these 2 characters }&
+	 sed y/'“”’‘'/'""'"''"/ \
+		 |gawk -v RS='([^!-}&[:alnum:][:blank:][:digit:]])+' '{printf "%s" , sep $0; sep="."}' 
+
+	 # no newline on purpose
+ 	}
+tr_file_test () {
+	for filename
+	do stripped="$(printf "%s" "$filename" | tr_file_stdin)"
+        test "$filename" = "$stripped" && { echo " no change intended for $filename"; continue ;}
+	printf '%q->' "$filename";   echo "$stripped" #actually prints original filename
+	done ;}
+
+count_rename_actions=4  # don't rename 1000 files
+i=1  #i need to access "$@" by number
+
+for file  # we loop through args once to check command line options, then do it again.
+do
+	if [ -n "$skip" ]; then  skip= ; continue;fi  #needed for argument setting
+  case $file in 
+    -i) inline=true ;; #accepts stdin.  should be a single filename, with no null characters. or forward slashes
+      #test meaningless if inline mode, actually so are further arguments
+    -m) e=$(($i + 1)) 
+	count_rename_actions="${!e}" 
+	test "$count_rename_actions" -ge 1 || { echo invalid value for "-m" "(maximum files)" ;exit 1; }  
+	skip=true ;;
+    -t) istest=true; echo "** test run ** " ;;
+    -h) helptext
+      exit 1 ;;
+  esac
+  ((i++))
+done
+
+if [ $# = 0 ]; then helptext; exit ; fi  #if 0 args
+
+
+ i=1  #i need to access "$@" by number
+filenumber=1  #i want to show numbers next to filenames for readability
+for file 
+do 
+	#same as above
+	if [ -n "$skip" ]; then  skip= ; continue;fi  #needed for argument setting
+  case $file in 
+    -i) inline=true ;; #accepts stdin.  should be a single filename, with no null characters. or forward slashes
+      #test meaningless if inline mode, actually so are further arguments
+    -m) e=$(($i + 1)) 
+	count_rename_actions="${!e}" 
+	test "$count_rename_actions" -ge 1 || { echo invalid value for "-m" "(maximum files)" ;exit 1; }  
+	skip=true 
+	continue ;;
+    -t) #istest=true; echo "*******is a test" ;;
+    	continue;;
+    -h) helptext
+      exit 1 ;;
+  esac
+  ((i++))
+  
+  
+	if [ -n  "$inline" ]  #was -i passed
+	then tr_file_stdin
+		exit
+	fi
+
+
+	if [ -n "$istest" ]  # was -t passed?
+		then echo -n "Name" "$filenumber ->"
+		 ((filenumber++));
+			tr_file_test  "$file"  
+	else 
+	test -e "$file" || { stat "$file"; continue;}
+		test $count_rename_actions = 0 && exit 0 # don't rename more files because we set a limit
+		tr_file "$file"
+	      #error on mv should exit before hitting here
+	       ((count_rename_actions--))
+
+	fi
+done
+
+exit 0
+
