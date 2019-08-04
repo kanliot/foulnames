@@ -1,21 +1,14 @@
-	use: foulnames [OPTIONS] filename [more filenames...]
-
-      foulnames is a little bash script to remove non-printable characters and control characters from filenames
-      should run fine on any unix with GNU bash and stuff. 
-      options: 
-      	-m NUM      allow foulnames to fix more than 4 files at a time. This was to prevent 
-                    foulnames *.mp3 from fixing 900 files by accident.
-        -i      pipe mode to stdout.  should remove all newlines
-                naturally the input only comes from a single filename which is piped in.  
-	        Yes, filenames can have newlines, and this is the solution.
-        -t      preview the new filenames, but don't fix filenames
+# foulnames
+The best way to automatically rename files with unusual characters in the filename.    
+Uses GNU awk to automatically detect which characters are Unicode text, and which characters are odd punctuation or control characters.
+      
       use: foulnames [OPTIONS] filename [more filenames...]
 
       foulnames is a little bash script to remove non-printable characters and control
       characters from filenames
       should run fine on any unix with GNU bash and stuff. 
       options: 
-      	-m NUM      allow foulnames to fix more than 4 files at a time. This was to prevent 
+        -m NUM      allow foulnames to fix more than 4 files at a time. This was to prevent 
                     foulnames *.mp3 from fixing 900 files by accident.
         -i      pipe mode to stdout.  should remove all newlines
                 naturally the input only comes from a single filename which is piped in.  
