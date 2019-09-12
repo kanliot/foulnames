@@ -10,7 +10,7 @@ Uses GNU awk to automatically detect which characters are Unicode text, and whic
       options: 
         -m NUM      allow foulnames to fix more than 4 files at a time. This was to prevent 
                     foulnames *.mp3 from fixing 900 files by accident.
-        -i      pipe mode to stdout.  should remove all newlines
+        -i      pipe mode from stdin.  should remove all newlines and /.
                 naturally the input only comes from a single filename which is piped in.  
                 Yes, filenames can have newlines, and this is the solution.
         -t      preview the new filenames, but don't fix filenames
