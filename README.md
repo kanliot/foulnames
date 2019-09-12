@@ -27,4 +27,5 @@ Then rename every file
 You may find that foulnames prevents you from renaming hundreds of files at once.    
 set the limit higher with this option: ` -m 9000 `
 
-Foulnames doesn't remove spaces or (), but it does replace smart quotes with regular quotes, and it replaces Unicode emoji's with '.'
+Foulnames doesn't remove spaces or (), but it does replace smart quotes with regular quotes, and it replaces Unicode emoji's with '.'     
+Foulnames replaces / with \, but this is only useful in the -i mode.
