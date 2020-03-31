@@ -22,13 +22,17 @@ the
 
 tr_file () {
 	# file has already been checked to exist
-	filename="$1"
-      stripped="$(printf "%s" "$1" | tr_file_stdin)"
-        test "$1" = "$stripped" && { echo "no rename intended for $filename"; return 1;}
+	fpath=`dirname "$1"`
+	name=`basename "$1"`
+      stripped="$(printf "%s" "$name" | tr_file_stdin)"
+        test "$name" = "$stripped" && { echo "no rename intended for $filename"; return 1;}
 	
 	# no clobber on the mv command isn't heuristic.   so we test for dest file existance, and then error out.
 	test -e "$stripped" && { printf "fatal error. %q already exists.  Cannot overwrite.\n" "$stripped" ;exit 1;}
-	mv -v "$1" "$stripped"  || exit 
+	if [[ "$fpath" ]]  # we have to add back the /
+	then mv -v "$1" "$fpath""/$stripped"  || exit 
+	else  mv -v "$1" "$stripped"  || exit 
+	fi 
 	}
 tr_file_stdin () {
 	#whole stream is one filename.	
